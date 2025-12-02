@@ -1,0 +1,9 @@
+[project]
+name = "example-countdown-py"
+version = "0.1.0"
+description = "Resonate example application."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "resonate-sdk>=0.6.7",
+]
