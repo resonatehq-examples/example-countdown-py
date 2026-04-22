@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/banner.png" alt="Countdown — Resonate example" />
+</p>
+
 # Example: Countdown with Durable Sleep (Python)
 
 A countdown timer that demonstrates **durable sleep** - long pauses without consuming resources, surviving crashes and resuming exactly where it left off.
