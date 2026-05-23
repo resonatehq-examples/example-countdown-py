@@ -1,5 +1,6 @@
 from resonate import Resonate, Context
 from typing import Generator, Any
+from threading import Event
 import requests
 
 resonate = Resonate.remote()
@@ -25,6 +26,11 @@ def notify(_: Context, message: str, url: str) -> None:
 
 print("countdown worker running", flush=True)
 resonate.start()
+
+try:
+    Event().wait()
+except KeyboardInterrupt:
+    resonate.stop()
 
 
 
