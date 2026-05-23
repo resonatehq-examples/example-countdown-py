@@ -5,6 +5,7 @@ import requests
 resonate = Resonate.remote()
 
 
+@resonate.register
 def countdown(ctx: Context, count: int, interval, url: str) -> Generator[Any, Any, Any]:
     for i in range(count, 0, -1):
         # Send notification
@@ -21,6 +22,7 @@ def notify(_: Context, message: str, url: str) -> None:
     response.raise_for_status()
 
 
+print("countdown worker running", flush=True)
 resonate.start()
 
 
