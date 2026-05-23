@@ -18,6 +18,7 @@ def countdown(ctx: Context, count: int, interval, url: str) -> Generator[Any, An
 
 
 def notify(_: Context, message: str, url: str) -> None:
+    print(f"notify: {message}", flush=True)
     response = requests.post(url, json={"message": message})
     response.raise_for_status()
 
