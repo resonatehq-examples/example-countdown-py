@@ -1,36 +1,44 @@
-from resonate import Resonate, Context
-from typing import Generator, Any
-from threading import Event
+from __future__ import annotations
+
+import asyncio
+import os
+from typing import TYPE_CHECKING
+
 import requests
 
-resonate = Resonate.remote()
+from resonate.resonate import Resonate
+
+if TYPE_CHECKING:
+    from resonate.context import Context
 
 
-@resonate.register
-def countdown(ctx: Context, count: int, interval, url: str) -> Generator[Any, Any, Any]:
+async def countdown(ctx: Context, count: int, interval: float, url: str) -> None:
     for i in range(count, 0, -1):
-        # Send notification
+        # Send notification (durable)
         message = f"Countdown: {i}"
-        yield ctx.run(notify, message=message, url=url)
-        # Sleep for the specified interval
-        yield ctx.sleep(interval)
+        await ctx.run(notify, message, url)
+        # Sleep for the specified interval (durable)
+        await ctx.sleep(interval)
     # Final notification
-    yield ctx.run(notify, message="Countdown complete", url=url)
+    await ctx.run(notify, "Countdown complete", url)
 
 
-def notify(_: Context, message: str, url: str) -> None:
+async def notify(ctx: Context, message: str, url: str) -> None:
     print(f"notify: {message}", flush=True)
     response = requests.post(url, json={"message": message})
     response.raise_for_status()
 
 
-print("countdown worker running", flush=True)
-resonate.start()
+async def main() -> None:
+    r = Resonate(
+        url=os.environ.get("RESONATE_URL", "http://localhost:8001"),
+        group="countdown-worker",
+    )
+    r.register(countdown)
+    r.register(notify)
+    print("countdown worker running", flush=True)
+    await asyncio.Event().wait()
 
-try:
-    Event().wait()
-except KeyboardInterrupt:
-    resonate.stop()
 
-
-
+if __name__ == "__main__":
+    asyncio.run(main())

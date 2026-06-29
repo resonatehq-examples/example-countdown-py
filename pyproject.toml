@@ -5,6 +5,6 @@ description = "Resonate example application."
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "resonate-sdk>=0.6.7",
+    "resonate-sdk>=0.7.0",
     "requests>=2.31.0",
 ]

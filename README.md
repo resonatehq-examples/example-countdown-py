@@ -34,16 +34,16 @@ This pattern applies to:
 ## How It Works
 
 ```python
-def countdown(ctx: Context, count: int, interval, url: str):
+async def countdown(ctx: Context, count: int, interval: float, url: str) -> None:
     for i in range(count, 0, -1):
         # Send notification (durable)
-        yield ctx.run(notify, message=f"Countdown: {i}", url=url)
+        await ctx.run(notify, f"Countdown: {i}", url)
 
         # Sleep for interval (process can exit here)
-        yield ctx.sleep(interval)
+        await ctx.sleep(interval)
 
     # Final notification
-    yield ctx.run(notify, message="Countdown complete", url=url)
+    await ctx.run(notify, "Countdown complete", url)
 ```
 
 ### What Happens on Each Iteration
