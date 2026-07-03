@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import os
 from typing import TYPE_CHECKING
 
@@ -18,7 +19,7 @@ async def countdown(ctx: Context, count: int, interval: float, url: str) -> None
         message = f"Countdown: {i}"
         await ctx.run(notify, message, url)
         # Sleep for the specified interval (durable)
-        await ctx.sleep(interval)
+        await ctx.sleep(datetime.timedelta(seconds=interval))
     # Final notification
     await ctx.run(notify, "Countdown complete", url)
 
@@ -32,7 +33,6 @@ async def notify(ctx: Context, message: str, url: str) -> None:
 async def main() -> None:
     r = Resonate(
         url=os.environ.get("RESONATE_URL", "http://localhost:8001"),
-        group="countdown-worker",
     )
     r.register(countdown)
     r.register(notify)
